@@ -1,4 +1,4 @@
-FROM quay.io/nordstrom/kubectl:1.4.0-3
+FROM quay.io/nordstrom/kubectl:1.4.4-1
 MAINTAINER Kubernetes Platform Team "invcldtm@nordstrom.com"
 
 ENV CA_CERT ""
