@@ -1,6 +1,6 @@
 image_registry := quay.io/nordstrom
 image_name := kube-deployer
-image_release := 0.0.6
+image_release := 0.0.8
 
 ifdef http_proxy
 build_args := --build-arg http_proxy=$(http_proxy) --build-arg https_proxy=$(http_proxy)
@@ -8,7 +8,7 @@ endif
 
 .PHONY: tag/image push/image
 
-build/image: build/sigil Makefile Dockerfile
+build/image: bin/check bin/in bin/out build/sigil Makefile Dockerfile
 	docker build -t $(image_name) $(build_args) .
 	touch $@
 
