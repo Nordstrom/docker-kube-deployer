@@ -14,4 +14,5 @@ kubectl config set-credentials ci --token=$TOKEN
 kubectl config set-context ci --cluster=ci --user=ci
 kubectl config use-context ci
 
+cd build
 make deploy
