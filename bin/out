@@ -7,11 +7,11 @@ cat /dev/stdin > /tmp/input
 
 TOKEN=$(jq -r .source.token < /tmp/input)
 KUBE_URL=$(jq -r .source.kube_utl < /tmp/input)
-jq -r .source.ca_cert < /tmp/input > ~/.kube/ca.pem
+jq -r .source.ca_cert < /tmp/input > /tmp/ca.pem
 
-kubectl config set-cluster platform --server=$KUBE_URL --certificate-authority=${HOME}/.kube/ca.pem
+kubectl config set-cluster ci --server=$KUBE_URL --certificate-authority=/tmp/ca.pem --embed-certs
 kubectl config set-credentials ci --token=$TOKEN
-kubectl config set-context platform --cluster=platform --user=ci
-kubectl config use-context platform
+kubectl config set-context ci --cluster=ci --user=ci
+kubectl config use-context ci
 
 make deploy
