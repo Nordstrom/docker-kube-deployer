@@ -7,7 +7,7 @@ payload=$(mktemp $TMPDIR/kubernetes-resource-request.XXXXXX)
 cat > $payload <&0
 
 TOKEN=$(jq -r .source.token < $payload)
-KUBE_URL=$(jq -r .source.kube_utl < $payload)
+KUBE_URL=$(jq -r .source.kube_url < $payload)
 jq -r .source.ca_cert < $payload > /tmp/ca.pem
 
 kubectl config set-cluster ci --server=$KUBE_URL --certificate-authority=/tmp/ca.pem --embed-certs
@@ -15,5 +15,10 @@ kubectl config set-credentials ci --token=$TOKEN
 kubectl config set-context ci --cluster=ci --user=ci
 kubectl config use-context ci
 
-cd $1
-make deploy
+
+MANIFEST_DIR=$(jq -r .params.manifest_dir < $payload)
+NAMESPACE=$(jq -r .params.namespace < $payload)
+RESOURCE=$(jq -r .params.resource < $payload)
+
+kubectl apply -f $1/$MANIFEST_DIR
+kubectl rollout status --namespace=$NAMESPACE $RESOURCE
