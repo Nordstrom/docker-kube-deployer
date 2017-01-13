@@ -22,3 +22,11 @@ RESOURCE=$(jq -r .params.resource < $payload)
 
 kubectl apply -f $1/$MANIFEST_DIR
 kubectl rollout status --namespace=$NAMESPACE $RESOURCE
+
+jq -n "{
+  version: { someversion: \"version\" },
+  metadata: [
+    { name: \"commit\", value: \"sha\" },
+    { name: \"author\", value: \"Team Member\" }
+  ]
+}" >&3
