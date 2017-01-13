@@ -20,7 +20,7 @@ MANIFEST_DIR=$(jq -r .params.manifest_dir < $payload)
 NAMESPACE=$(jq -r .params.namespace < $payload)
 RESOURCE=$(jq -r .params.resource < $payload)
 
-kubectl apply -f $1/$MANIFEST_DIR
+kubectl apply -f $1/$MANIFEST_DIR --namespace=$NAMESPACE
 kubectl rollout status --namespace=$NAMESPACE $RESOURCE
 
 jq -n "{
