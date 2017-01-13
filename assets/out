@@ -19,8 +19,9 @@ kubectl config use-context ci
 MANIFEST_DIR=$(jq -r .params.manifest_dir < $payload)
 NAMESPACE=$(jq -r .params.namespace < $payload)
 RESOURCE=$(jq -r .params.resource < $payload)
+APPLY_OPTIONS=$(jq -r .params.apply_options < $payload)
 
-kubectl apply -f $1/$MANIFEST_DIR --namespace=$NAMESPACE
+kubectl apply -f $1/$MANIFEST_DIR --namespace=$NAMESPACE $APPLY_OPTIONS
 kubectl rollout status --namespace=$NAMESPACE $RESOURCE
 
 jq -n "{
