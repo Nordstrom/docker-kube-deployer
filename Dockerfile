@@ -10,7 +10,7 @@ ENV CA_CERT ""
 ENV USER_CERT ""
 ENV USER_KEY ""
 
-ADD build/sigil /usr/local/bin/sigil
+ADD assets/sigil /usr/local/bin/sigil
 ADD assets/check /opt/resource/check
 ADD assets/in /opt/resource/in
 ADD assets/out /opt/resource/out
