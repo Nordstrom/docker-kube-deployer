@@ -6,6 +6,13 @@ exec 1>&2 # send normal stdout to stderr for logging
 payload=$(mktemp /tmp/kubernetes-resource-payload.XXXXXX)
 cat > $payload <&0
 
+source=$1
+if [ -z "$source" ]; then
+  echo "usage: $0 <path/to/source>"
+  exit 1
+fi
+cd $source
+
 TOKEN=$(jq -r .source.token < $payload)
 KUBE_URL=$(jq -r .source.kube_url < $payload)
 jq -r .source.ca_cert < $payload > /tmp/ca.pem
@@ -22,8 +29,6 @@ NAMESPACE=$(jq -r .params.namespace < $payload)
 VALUE_FILES=$(jq -r .params.values < $payload)
 #APPLY_OPTIONS=$(jq -r '.params.apply_options // ""' < $payload)
 
-pwd
-ls -la
 helm install $CHART --name $RELEASE_NAME --namespace $NAMESPACE --wait -f $VALUE_FILES
 
 
