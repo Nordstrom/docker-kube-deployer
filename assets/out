@@ -29,7 +29,7 @@ NAMESPACE=$(jq -r .params.namespace < $payload)
 VALUE_FILES=$(jq -r .params.values < $payload)
 #APPLY_OPTIONS=$(jq -r '.params.apply_options // ""' < $payload)
 
-helm install $CHART --name $RELEASE_NAME --namespace $NAMESPACE --wait -f $VALUE_FILES
+helm upgrade $RELEASE_NAME $CHART --install --namespace $NAMESPACE --wait -f $VALUE_FILES
 
 
 jq -n "{}" >&3
