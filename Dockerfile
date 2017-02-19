@@ -1,4 +1,4 @@
-FROM quay.io/nordstrom/kubectl:1.5.1-1
+FROM quay.io/nordstrom/helm
 MAINTAINER Kubernetes Platform Team "invcldtm@nordstrom.com"
 
 ARG AWSCLI_VERSION
