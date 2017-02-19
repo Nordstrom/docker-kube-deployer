@@ -3,7 +3,7 @@ set -e
 set -o pipefail
 exec 3>&1 # use fd 3 for script output
 exec 1>&2 # send normal stdout to stderr for logging
-payload=$(mktemp $TMPDIR/kubernetes-resource-payload.XXXXXX)
+payload=$(mktemp /tmp/kubernetes-resource-payload.XXXXXX)
 cat > $payload <&0
 
 TOKEN=$(jq -r .source.token < $payload)
@@ -22,6 +22,8 @@ NAMESPACE=$(jq -r .params.namespace < $payload)
 VALUE_FILES=$(jq -r .params.values < $payload)
 #APPLY_OPTIONS=$(jq -r '.params.apply_options // ""' < $payload)
 
+pwd
+ls -la
 helm install $CHART --name $RELEASE_NAME --namespace $NAMESPACE --wait -f $VALUE_FILES
 
 
