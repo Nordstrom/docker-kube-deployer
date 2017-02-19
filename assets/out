@@ -3,7 +3,7 @@ set -e
 set -o pipefail
 exec 3>&1 # use fd 3 for script output
 exec 1>&2 # send normal stdout to stderr for logging
-payload=$(mktemp $TMPDIR/kubernetes-resource-request.XXXXXX)
+payload=$(mktemp $TMPDIR/kubernetes-resource-payload.XXXXXX)
 cat > $payload <&0
 
 TOKEN=$(jq -r .source.token < $payload)
@@ -16,18 +16,15 @@ kubectl config set-context ci --cluster=ci --user=ci
 kubectl config use-context ci
 
 
-MANIFEST_DIR=$(jq -r .params.manifest_dir < $payload)
+CHART=$(jq -r .params.chart < $payload)
+RELEASE_NAME=$(jq -r .params.name < $payload)
 NAMESPACE=$(jq -r .params.namespace < $payload)
-RESOURCE=$(jq -r .params.resource < $payload)
-APPLY_OPTIONS=$(jq -r '.params.apply_options // ""' < $payload)
+IMAGE_DIR=$(jq -r .params.image_dir < $payload)
+VALUE_FILES=$(jq -r .params.values < $payload)
+#APPLY_OPTIONS=$(jq -r '.params.apply_options // ""' < $payload)
 
-kubectl apply -f $1/$MANIFEST_DIR --namespace=$NAMESPACE $APPLY_OPTIONS
-kubectl rollout status --namespace=$NAMESPACE $RESOURCE
+helm install $CHART --name $RELEASE_NAME --namespace $NAMESPACE --wait -f $VALUE_FILES
+#--set image=`cat ECR/repository <(echo @) ECR/digest | tr -d '\n'`
 
-jq -n "{
-  version: { someversion: \"version\" },
-  metadata: [
-    { name: \"commit\", value: \"sha\" },
-    { name: \"author\", value: \"Team Member\" }
-  ]
-}" >&3
+
+jq -n "{}" >&3
