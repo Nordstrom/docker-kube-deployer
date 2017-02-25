@@ -32,6 +32,7 @@ VALUE_FILES=$(jq -r .params.values < $payload)
 echo "Values:"
 cat $VALUE_FILES
 
+helm repo update
 helm upgrade $RELEASE_NAME $CHART --install --namespace $NAMESPACE --wait -f $VALUE_FILES
 
 
