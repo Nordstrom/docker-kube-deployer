@@ -27,13 +27,17 @@ CHART=$(jq -r .params.chart < $payload)
 RELEASE_NAME=$(jq -r .params.name < $payload)
 NAMESPACE=$(jq -r .params.namespace < $payload)
 VALUE_FILES=$(jq -r .params.values < $payload)
+
+if [ $(jq -r .params.wait < $payload) = "false" ]; then 
+  WAIT=""
+else
+  WAIT="--wait"
+fi
+
 #APPLY_OPTIONS=$(jq -r '.params.apply_options // ""' < $payload)
 
-echo "Values:"
-cat $VALUE_FILES
-
 helm repo update
-helm upgrade $RELEASE_NAME $CHART --install --namespace $NAMESPACE --wait -f $VALUE_FILES
+helm upgrade $RELEASE_NAME $CHART --install --namespace $NAMESPACE $WAIT -f $VALUE_FILES
 
 
-jq -n "{}" >&3
+jq -n "{\"status\": \"$(helm status $RELEASE_NAME)\"}" >&3
