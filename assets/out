@@ -37,6 +37,7 @@ fi
 #APPLY_OPTIONS=$(jq -r '.params.apply_options // ""' < $payload)
 
 helm repo update
+helm dep update $CHART
 helm upgrade $RELEASE_NAME $CHART --install --namespace $NAMESPACE $WAIT -f $VALUE_FILES
 
 
