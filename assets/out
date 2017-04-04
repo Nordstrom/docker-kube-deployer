@@ -27,6 +27,11 @@ CHART=$(jq -r .params.chart < $payload)
 RELEASE_NAME=$(jq -r .params.name < $payload)
 NAMESPACE=$(jq -r .params.namespace < $payload)
 VALUE_FILES=$(jq -r .params.values < $payload)
+WORKING_DIR=$(jq -r .params.working_dir < $payload)
+
+if [ ! -z $WORKING_DIR ]; then
+  cd $WORKING_DIR
+fi
 
 if [ $(jq -r .params.wait < $payload) = "false" ]; then 
   WAIT=""
