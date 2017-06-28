@@ -2,14 +2,13 @@ FROM quay.io/nordstrom/helm
 MAINTAINER Kubernetes Platform Team "invcldtm@nordstrom.com"
 
 ARG AWSCLI_VERSION
-ENV AWSCLI_VERSION ${AWSCLI_VERSION:-1.11.30}
+ENV AWSCLI_VERSION ${AWSCLI_VERSION:-1.11.106}
 
 RUN apt-get update && apt-get install -y \
   jq \
   python2.7 \
   python-pip \
   && pip install --upgrade pip
-
 
 RUN pip install --upgrade pip \
  && pip install setuptools \
