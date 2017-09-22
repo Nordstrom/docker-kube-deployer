@@ -1,8 +1,8 @@
-FROM quay.io/nordstrom/helm
-MAINTAINER Kubernetes Platform Team "invcldtm@nordstrom.com"
+FROM quay.io/nordstrom/helm:2.6.1-1
+MAINTAINER Kubernetes Platform Team "techk8s@nordstrom.com"
 
 ARG AWSCLI_VERSION
-ENV AWSCLI_VERSION ${AWSCLI_VERSION:-1.11.113}
+ENV AWSCLI_VERSION ${AWSCLI_VERSION:-1.11.150}
 
 RUN apt-get update && apt-get install -y \
   git \
