@@ -27,3 +27,6 @@ ADD assets/out /opt/resource/out
 USER root
 ADD https://releases.hashicorp.com/terraform/0.8.7/terraform_0.8.7_linux_amd64.zip .
 RUN unzip terraform_0.8.7_linux_amd64.zip -d /usr/bin
+ADD https://github.com/coreos/container-linux-config-transpiler/releases/download/v0.4.2/ct-v0.4.2-x86_64-unknown-linux-gnu ct
+RUN chmod +x ct \
+ && mv ct /usr/local/bin
