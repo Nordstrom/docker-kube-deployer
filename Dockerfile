@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
   jq \
   python2.7 \
   python-pip \
+  unzip \
   && pip install --upgrade pip
 
 RUN pip install --upgrade pip \
