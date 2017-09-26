@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y \
   jq \
   python2.7 \
   python-pip \
-  unzip \
-  && pip install --upgrade pip
+  unzip
 
 RUN pip install --upgrade pip \
  && pip install setuptools \
@@ -30,3 +29,5 @@ RUN unzip terraform_0.8.7_linux_amd64.zip -d /usr/bin
 ADD https://github.com/coreos/container-linux-config-transpiler/releases/download/v0.4.2/ct-v0.4.2-x86_64-unknown-linux-gnu ct
 RUN chmod +x ct \
  && mv ct /usr/local/bin
+
+RUN chsh -s /bin/bash
