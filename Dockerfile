@@ -5,16 +5,26 @@ ARG AWSCLI_VERSION
 ENV AWSCLI_VERSION ${AWSCLI_VERSION:-1.11.150}
 
 RUN apt-get update && apt-get install -y \
+  gccgo \
   git \
   jq \
   python2.7 \
   python-pip \
+  rsync \
+  software-properties-common \
   ssh \
   unzip
 
 RUN pip install --upgrade pip \
  && pip install setuptools \
  && pip install awscli==${AWSCLI_VERSION}
+ 
+RUN add-apt-repository ppa:gophers/archive -y \
+ && apt update \
+ && apt-get install golang-1.8-go -y \
+ && export GOPATH=$HOME/go \
+ && mkdir $GOPATH \
+ && export PATH="/usr/lib/go-1.8/bin:$GOPATH/bin:$PATH"
 
 ENV CA_CERT ""
 ENV USER_CERT ""
