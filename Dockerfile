@@ -24,7 +24,7 @@ RUN pip install --upgrade pip \
  
 RUN add-apt-repository ppa:gophers/archive -y \
  && apt update \
- && apt-get install golang-1.8-go -y \
+ && apt-get install golang-1.9-go -y \
  && mkdir ${HOME}/go
 
 ENV GOPATH ${HOME}/go
