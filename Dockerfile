@@ -79,7 +79,7 @@ ENV K8S_PATH ${GOPATH}/src/github.com/kubernetes/kubernetes
 
 
 # Install gcloud-sdk
-COPY --from=gcloud-sdk /google-cloud-sdk/bin /google-cloud-sdk/bin
+COPY --from=gcloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 VOLUME ["/.config"]
 
@@ -89,4 +89,4 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
 # Change default user to ubuntu
-USER ubuntu
+USER nordstrom
