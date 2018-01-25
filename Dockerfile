@@ -78,7 +78,7 @@ RUN chmod +x ct \
 
 
 # Install gcloud-sdk
-COPY --from=gcloud-sdk /google-cloud-sdk/bin /google-cloud-sdk/bin
+COPY --from=gcloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 VOLUME ["/.config"]
 
