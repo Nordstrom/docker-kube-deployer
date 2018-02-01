@@ -66,7 +66,6 @@ RUN chmod +x ct \
  ENV HELM_VERSION ${HELM_VERSION:-2.8.0}
  RUN curl -sL https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
          | tar -xzC /usr/local/bin --strip-components=1 linux-amd64/helm
- RUN helm init --client-only
 
 
  # Install awscli
@@ -89,3 +88,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Change default user to ubuntu
 USER nordstrom
+
+
+# Init helm (after changing user)
+ RUN helm init --client-only
