@@ -86,6 +86,11 @@ VOLUME ["/.config"]
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
+# Install Nordstrom RootCA certificates (Required to build monitoring & kubelogin)
+RUN cp -r /etc/ssl/nordstrom-ca-certs/* /usr/local/share/ca-certificates && \
+    update-ca-certificates
+
+
 # Change default user to ubuntu
 USER nordstrom
 
