@@ -1,4 +1,5 @@
 FROM google/cloud-sdk:183.0.0-alpine as gcloud-sdk
+FROM cfssl/cfssl:1.3.0 as cfssl
 
 FROM quay.io/nordstrom/baseimage-ubuntu:18.04
 MAINTAINER Nordstrom Kubernetes Platform Team "techk8s@nordstrom.com"
@@ -89,6 +90,19 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Install Nordstrom RootCA certificates (Required to build monitoring & kubelogin)
 RUN cp -r /etc/ssl/nordstrom-ca-certs/* /usr/local/share/ca-certificates && \
     update-ca-certificates
+
+
+# Install cfssl
+COPY --from=cfssl \
+     /go/bin/cfssl \
+     /go/bin/cfssl-bundle \
+     /go/bin/cfssl-certinfo \
+     /go/bin/cfssl-newkey \
+     /go/bin/cfssl-scan \
+     /go/bin/cfssljson \
+     /go/bin/mkbundle \
+     /go/bin/multirootca \
+     /usr/bin/
 
 
 # Change default user to ubuntu
