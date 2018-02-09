@@ -61,7 +61,10 @@ RUN curl -sSLo /kubectl $url
 RUN chmod +x /kubectl
 
 # Install terraform
-FROM hashicorp/terraform:0.11.2 as terraform
+FROM hashicorp/terraform:0.8.7 as terraform-0.8
+RUN cp /bin/terraform /
+
+FROM hashicorp/terraform:0.11.2 as terraform-0.11
 RUN cp /bin/terraform /
 
 ### Final build stage ###
@@ -103,15 +106,17 @@ RUN pip install --upgrade pip setuptools \
  && pip install awscli==${AWSCLI_VERSION}
 
 # grab build artifacts from earlier build stages
-COPY --from=cfssl      /go/bin/*         /usr/local/bin/
-COPY --from=ct         /ct               /usr/local/bin/
-COPY --from=git-crypt  /git-crypt        /usr/local/bin/
-COPY --from=helm       /helm             /usr/local/bin/
-COPY --from=kubecfg    /kubecfg          /usr/local/bin/
-COPY --from=kubernetes /e2e.test         /usr/local/bin/
-COPY --from=kubernetes /kubectl          /usr/local/bin/
-COPY --from=terraform  /terraform        /usr/local/bin/
-COPY --from=gcloud     /google-cloud-sdk /google-cloud-sdk
+COPY --from=cfssl          /go/bin/*         /usr/local/bin/
+COPY --from=ct             /ct               /usr/local/bin/
+COPY --from=git-crypt      /git-crypt        /usr/local/bin/
+COPY --from=helm           /helm             /usr/local/bin/
+COPY --from=kubecfg        /kubecfg          /usr/local/bin/
+COPY --from=kubernetes     /e2e.test         /usr/local/bin/
+COPY --from=kubernetes     /kubectl          /usr/local/bin/
+COPY --from=terraform-0.8  /terraform        /usr/local/bin/
+COPY --from=terraform-0.8  /terraform        /usr/local/bin/terraform-0.8
+COPY --from=terraform-0.11 /terraform        /usr/local/bin/terraform-0.11
+COPY --from=gcloud         /google-cloud-sdk /google-cloud-sdk
 
 # for backwards compatibility
 COPY --from=kubernetes /e2e.test \
