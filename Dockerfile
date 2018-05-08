@@ -36,7 +36,7 @@ RUN chmod +x /kubecfg
 
 # Install helm
 FROM debian as helm
-ARG HELM_VERSION=2.8.2
+ARG HELM_VERSION=2.9.0
 ADD https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz helm.tgz
 RUN tar -xzf helm.tgz --strip-components=1
 
