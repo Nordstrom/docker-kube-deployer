@@ -43,25 +43,12 @@ RUN tar -xzf helm.tgz --strip-components=1
 # Install kubectl + e2e.test
 FROM golang:1.9-stretch as kubernetes
 USER root
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get -qq update
-RUN apt-get -qq install \
-        make \
-        rsync
-ARG KUBERNETES_VERSION=1.9.6
-WORKDIR /go/src/github.com/kubernetes/kubernetes
-ENV url=https://github.com/kubernetes/kubernetes/archive/v${KUBERNETES_VERSION}.tar.gz
-RUN curl -sSL $url | tar -xz --strip-components=1
-RUN make WHAT=test/e2e/e2e.test
-RUN cp _output/bin/e2e.test /
-ENV url=https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
-RUN curl -sSLo /kubectl $url
-RUN chmod +x /kubectl
+
 
 # Install terraform
 FROM hashicorp/terraform:0.8.8 as terraform-0.8
 RUN cp /bin/terraform /
-FROM hashicorp/terraform:0.11.2 as terraform-0.11
+FROM hashicorp/terraform:0.11.7 as terraform-0.11
 RUN cp /bin/terraform /
 
 ### Final build stage ###
@@ -104,21 +91,21 @@ RUN chmod +x bazel.sh \
  && bazel \
  && rm bazel.sh
 
+# Install Kubectl
+ARG KUBERNETES_VERSION=1.9.6
+RUN curl -sSLo /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
+RUN chmod +x /usr/local/bin/kubectl
+
 # grab build artifacts from earlier build stages
 COPY --from=cfssl          /go/bin/*             /usr/local/bin/
 COPY --from=ct             /ct                   /usr/local/bin/
 COPY --from=git-crypt      /git-crypt            /usr/local/bin/
 COPY --from=helm           /helm                 /usr/local/bin/
 COPY --from=kubecfg        /kubecfg              /usr/local/bin/
-COPY --from=kubernetes     /e2e.test             /usr/local/bin/
-COPY --from=kubernetes     /kubectl              /usr/local/bin/
 COPY --from=terraform-0.8  /terraform            /usr/local/bin/terraform-0.8
 COPY --from=terraform-0.11 /terraform            /usr/local/bin/terraform-0.11
 COPY --from=gcloud         /google-cloud-sdk     /google-cloud-sdk
 
-# for backwards compatibility
-COPY --from=kubernetes /e2e.test \
-        /go/src/github.com/kubernetes/kubernetes/_output/bin/e2e.test
 
 # Install Nordstrom RootCA certificates (Required to build monitoring & kubelogin)
 RUN cp -R /etc/ssl/nordstrom-ca-certs/* /usr/local/share/ca-certificates \
