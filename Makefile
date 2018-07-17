@@ -1,6 +1,6 @@
 IMAGE_NAME := kube-deployer
 IMAGE_REGISTRY := quay.io/nordstrom
-IMAGE_TAG := 3.4
+IMAGE_TAG := 3.5
 
 .PHONY: push/image
 push/image: tag/image

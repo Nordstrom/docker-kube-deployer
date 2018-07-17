@@ -40,16 +40,22 @@ ARG HELM_VERSION=2.9.0
 ADD https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz helm.tgz
 RUN tar -xzf helm.tgz --strip-components=1
 
-# Install kubectl + e2e.test
-FROM golang:1.9-stretch as kubernetes
-USER root
-
-
 # Install terraform
 FROM hashicorp/terraform:0.8.8 as terraform-0.8
 RUN cp /bin/terraform /
 FROM hashicorp/terraform:0.11.7 as terraform-0.11
 RUN cp /bin/terraform /
+
+# Install jsonnet
+FROM golang:1.9-stretch as jsonnet
+USER root
+ARG GOJSONNET_VERSION=v0.10.0
+RUN go get github.com/google/go-jsonnet
+RUN go get github.com/fatih/color
+WORKDIR /go/src/github.com/google/go-jsonnet/jsonnet
+RUN git checkout v0.10.0
+RUN go build
+RUN cp jsonnet /jsonnet
 
 ### Final build stage ###
 FROM quay.io/nordstrom/baseimage-ubuntu:18.04 as base
@@ -105,7 +111,7 @@ COPY --from=kubecfg        /kubecfg              /usr/local/bin/
 COPY --from=terraform-0.8  /terraform            /usr/local/bin/terraform-0.8
 COPY --from=terraform-0.11 /terraform            /usr/local/bin/terraform-0.11
 COPY --from=gcloud         /google-cloud-sdk     /google-cloud-sdk
-
+COPY --from=jsonnet        /jsonnet              /usr/local/bin
 
 # Install Nordstrom RootCA certificates (Required to build monitoring & kubelogin)
 RUN cp -R /etc/ssl/nordstrom-ca-certs/* /usr/local/share/ca-certificates \
